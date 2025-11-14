@@ -55,7 +55,7 @@ def run_all_cases(config_path: str) -> None:
                 metrics, 
                 plot_path,
                 train_end_date=config.dates.train_end,
-                val_start_date=config.dates.val_start
+                val_start_date=config.dates.val_start,
             )
             
             # Store metrics
