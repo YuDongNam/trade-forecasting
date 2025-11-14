@@ -66,11 +66,11 @@ def train_case(
     
     # Add exogenous regressors
     exogenous_cols = [col for col in train_df.columns if col not in ["ds", "y"]]
-    for col in exogenous_cols:
-        # world_* 케이스에는 fx_close 자체가 없으니 자동으로 건너뜀
-        model.add_future_regressor(col, normalize="auto")
     # for col in exogenous_cols:
-    #    model.add_lagged_regressor(col)
+    # world_* 케이스에는 fx_close 자체가 없으니 자동으로 건너뜀
+    #   model.add_future_regressor(col, normalize="auto")
+    for col in exogenous_cols:
+       model.add_lagged_regressor(col)
     
     # Fit model
     print(f"Training {case.label}...")
