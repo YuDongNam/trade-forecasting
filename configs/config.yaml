@@ -18,9 +18,9 @@ model:
   changepoints_range: 0.8
   n_lags: 10  # number of lags for autoregression
   normalize: "auto"
-  trend_reg: 0.1
-  seasonality_reg: 0.1
-  ar_reg: 0.1
+  trend_reg: 1
+  seasonality_reg: 0.5
+  ar_reg: 0.5
   # GPU settings
   accelerator: "gpu"  # "auto", "gpu", or "cpu"
   devices: 1
