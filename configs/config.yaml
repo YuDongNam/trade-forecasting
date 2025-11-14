@@ -14,21 +14,21 @@ model:
   batch_size: 32
   learning_rate: 0.001
   loss_func: "MAE"
-  n_changepoints: 10
+  n_changepoints: 25
   changepoints_range: 0.8
-  n_lags: 0  # number of lags for autoregression
+  n_lags: 10  # number of lags for autoregression
   normalize: "auto"
-  trend_reg: 0.5
-  seasonality_reg: 0
-  ar_reg: 0.0
+  trend_reg: 0.1
+  seasonality_reg: 0.1
+  ar_reg: 0.1
   # GPU settings
   accelerator: "gpu"  # "auto", "gpu", or "cpu"
   devices: 1
   # seasonality
-  yearly_seasonality: true
+  yearly_seasonality: "auto"
   weekly_seasonality: false
   daily_seasonality: false
-  seasonality_mode: "additive"   # or "multiplicative"
+  seasonality_mode: "multiplicative"   # or "additive"
 
 # Output directories
 outputs:
