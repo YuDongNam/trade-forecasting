@@ -53,6 +53,9 @@ def train_case(
     Returns:
         Tuple of (trained_model, metrics_dict, predictions_df)
     """
+    # baseline: except for exogenous
+    data_df = data_df[["ds","y"]].copy()
+    
     # Split data
     train_df, val_df = split_train_val(data_df, config.dates)
     
