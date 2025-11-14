@@ -3,9 +3,9 @@
 # Date ranges for train/validation split
 dates:
   train_start: "2010-01-01"
-  train_end: "2024-05-31"
-  val_start: "2024-06-01"
-  val_end: "2025-05-31"
+  train_end: "2023-12-31"
+  val_start: "2024-01-01"
+  val_end: "2024-12-31"
   forecast_horizon: 12  # months
 
 # NeuralProphet hyperparameters
@@ -16,7 +16,7 @@ model:
   loss_func: "MAE"
   n_changepoints: 10
   changepoints_range: 0.8
-  n_lags: 12  # number of lags for autoregression
+  n_lags: 6  # number of lags for autoregression
   normalize: "auto"
   trend_reg: 0
   seasonality_reg: 0
