@@ -1,0 +1,110 @@
+# Global configuration for NeuralProphet time-series forecasting pipeline
+
+# Date ranges for train/validation split
+dates:
+  train_start: "2010-01-01"
+  train_end: "2020-12-31"
+  val_start: "2021-01-01"
+  val_end: "2024-12-31"
+  forecast_horizon: 12  # months
+
+# NeuralProphet hyperparameters
+model:
+  epochs: 100
+  batch_size: 32
+  learning_rate: 0.01
+  loss_func: "MAE"
+  n_changepoints: 10
+  changepoints_range: 0.8
+  n_lags: 12  # number of lags for autoregression
+  normalize: "auto"
+  trend_reg: 0
+  seasonality_reg: 0
+  ar_reg: 0.1
+  # GPU settings
+  accelerator: "auto"  # "auto", "gpu", or "cpu"
+  devices: 1
+
+# Output directories
+outputs:
+  models_dir: "outputs/models"
+  plots_dir: "outputs/plots"
+  metrics_dir: "outputs/metrics"
+
+# Data directory
+data_dir: "data"
+
+# Case definitions
+cases:
+  - id: "korea_import"
+    label: "Korea-Import"
+    target_csv: "Korea_Import.csv"
+    uses_fx: true
+    fx_file: "USD_KRW.csv"
+    
+  - id: "korea_export"
+    label: "Korea-Export"
+    target_csv: "Korea_Export.csv"
+    uses_fx: true
+    fx_file: "USD_KRW.csv"
+    
+  - id: "china_import"
+    label: "China-Import"
+    target_csv: "China_Import.csv"
+    uses_fx: true
+    fx_file: "USD_CNY.csv"
+    
+  - id: "china_export"
+    label: "China-Export"
+    target_csv: "China_Export.csv"
+    uses_fx: true
+    fx_file: "USD_CNY.csv"
+    
+  - id: "taiwan_import"
+    label: "Taiwan-Import"
+    target_csv: "Taiwan_Import.csv"
+    uses_fx: true
+    fx_file: "USD_TWD.csv"
+    
+  - id: "taiwan_export"
+    label: "Taiwan-Export"
+    target_csv: "Taiwan_Export.csv"
+    uses_fx: true
+    fx_file: "USD_TWD.csv"
+    
+  - id: "world_import"
+    label: "World-Import"
+    target_csv: "World_Import.csv"
+    uses_fx: false
+    
+  - id: "world_export"
+    label: "World-Export"
+    target_csv: "World_Export.csv"
+    uses_fx: false
+
+# Exogenous features (shared across all cases)
+exogenous:
+  tariff:
+    file: "tariff.csv"
+    date_col_candidates: ["date", "ds", "Date", "날짜"]
+    value_col_candidates: ["tariff_rate", "value", "y"]
+    aggregation: "last"  # last value in month
+    
+  oil:
+    file: "WTI유 선물 과거 데이터.csv"
+    date_col_candidates: ["ds", "date", "Date", "날짜"]
+    value_col_candidates: ["y", "close", "Close", "종가"]
+    aggregation: "last"  # last close of month
+    
+  copper:
+    file: "구리선물.csv"
+    date_col_candidates: ["ds", "date", "Date", "날짜"]
+    value_col_candidates: ["y", "close", "Close", "종가"]
+    aggregation: "last"  # last close of month
+    
+  fed_rate:
+    file: "미국기준금리.csv"
+    date_col_candidates: ["ds", "date", "Date", "날짜"]
+    value_col_candidates: ["y", "value", "rate"]
+    aggregation: "last"  # last rate of month
+

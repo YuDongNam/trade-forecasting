@@ -1,0 +1,26 @@
+# Core dependencies for NeuralProphet time-series forecasting
+
+# Python version
+# Requires: python >= 3.10, < 3.13
+
+# NeuralProphet and PyTorch
+neuralprophet>=0.6.0
+torch>=2.0.0
+pytorch-lightning>=2.0.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0,<2.0.0  # NeuralProphet requires numpy < 2.0
+
+# Machine learning utilities
+scikit-learn>=1.3.0
+
+# Visualization
+matplotlib>=3.7.0
+
+# Configuration
+pyyaml>=6.0
+
+# Optional: for better progress bars
+tqdm>=4.65.0
+
