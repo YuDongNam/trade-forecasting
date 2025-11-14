@@ -49,5 +49,18 @@ def build_neuralprophet(
         seasonality_mode=getattr(config, "seasonality_mode", "additive"),
     )
     
+    # FUTURE REGRESSORS 추가부분
+    FUTURE_COLS = [
+        "tariff_rate",
+        "oil_close",
+        "copper_close",
+        "fed_rate",
+        "fx_close",   # world 계열은 어차피 없는 열이 있어도 df에서 자동 제거됨
+    ]
+
+    for col in FUTURE_COLS:
+        # future regressor로 등록
+        model.add_future_regressor(col, normalize="auto")
+    
     return model
 
