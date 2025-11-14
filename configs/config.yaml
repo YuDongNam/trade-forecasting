@@ -19,7 +19,7 @@ model:
   n_lags: 10  # number of lags for autoregression
   normalize: "auto"
   trend_reg: 1
-  seasonality_reg: 0.5
+  seasonality_reg: 1
   ar_reg: 0.5
   # GPU settings
   accelerator: "gpu"  # "auto", "gpu", or "cpu"
@@ -28,7 +28,7 @@ model:
   yearly_seasonality: "auto"
   weekly_seasonality: false
   daily_seasonality: false
-  seasonality_mode: "multiplicative"   # or "additive"
+  seasonality_mode: "additive" # "multiplicative"
 
 # Output directories
 outputs:
