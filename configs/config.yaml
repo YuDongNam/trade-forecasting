@@ -10,7 +10,7 @@ dates:
 
 # NeuralProphet hyperparameters
 model:
-  epochs: 100
+  epochs: 150
   batch_size: 32
   learning_rate: 0.001
   loss_func: "MAE"
@@ -20,10 +20,15 @@ model:
   normalize: "auto"
   trend_reg: 0
   seasonality_reg: 0
-  ar_reg: 0.1
+  ar_reg: 0.3
   # GPU settings
   accelerator: "gpu"  # "auto", "gpu", or "cpu"
   devices: 1
+  # seasonality
+  yearly_seasonality: true
+  weekly_seasonality: false
+  daily_seasonality: false
+  seasonality_mode: "additive"   # or "multiplicative"
 
 # Output directories
 outputs:
