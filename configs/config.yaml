@@ -16,11 +16,11 @@ model:
   loss_func: "MAE"
   n_changepoints: 10
   changepoints_range: 0.8
-  n_lags: 6  # number of lags for autoregression
+  n_lags: 0  # number of lags for autoregression
   normalize: "auto"
-  trend_reg: 0
+  trend_reg: 0.5
   seasonality_reg: 0
-  ar_reg: 0.3
+  ar_reg: 0.0
   # GPU settings
   accelerator: "gpu"  # "auto", "gpu", or "cpu"
   devices: 1
