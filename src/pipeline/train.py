@@ -65,9 +65,9 @@ def train_case(
     model = build_neuralprophet(config.model)
     
     # Add exogenous regressors
-    exogenous_cols = [col for col in train_df.columns if col not in ["ds", "y"]]
-    for col in exogenous_cols:
-        model.add_lagged_regressor(col)
+    # exogenous_cols = [col for col in train_df.columns if col not in ["ds", "y"]]
+    # for col in exogenous_cols:
+    #    model.add_lagged_regressor(col)
     
     # Fit model
     print(f"Training {case.label}...")
