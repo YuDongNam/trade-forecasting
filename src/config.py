@@ -31,6 +31,10 @@ class ModelConfig:
     ar_reg: float
     accelerator: str
     devices: int
+    yearly_seasonality: bool
+    weekly_seasonality: bool
+    daily_seasonality: bool
+    seasonality_mode: str
 
 
 @dataclass
