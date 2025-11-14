@@ -43,10 +43,10 @@ def build_neuralprophet(
         epochs=config.epochs,
         batch_size=config.batch_size,
         loss_func=config.loss_func,
-        yearly_seasonality=cfg.yearly_seasonality,
-        weekly_seasonality=cfg.weekly_seasonality,
-        daily_seasonality=cfg.daily_seasonality,
-        seasonality_mode=getattr(cfg, "seasonality_mode", "additive"),
+        yearly_seasonality=config.yearly_seasonality,
+        weekly_seasonality=config.weekly_seasonality,
+        daily_seasonality=config.daily_seasonality,
+        seasonality_mode=getattr(config, "seasonality_mode", "additive"),
     )
     
     return model
