@@ -11,12 +11,12 @@ dates:
 # NeuralProphet hyperparameters
 model:
   epochs: 150
-  batch_size: 32
-  learning_rate: 0.001
+  batch_size: 64
+  learning_rate: 0.0005
   loss_func: "Huber"
   n_changepoints: 10
   changepoints_range: 0.8
-  n_lags: 10  # number of lags for autoregression
+  n_lags: 6  # number of lags for autoregression
   normalize: "auto"
   trend_reg: 1
   seasonality_reg: 1
