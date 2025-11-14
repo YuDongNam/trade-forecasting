@@ -55,6 +55,9 @@ def train_case(
     """
     # baseline: except for exogenous
     data_df = data_df[["ds","y"]].copy()
+
+    # Log transform target
+    data_df["y"] = np.log1p(data_df["y"])
     
     # Split data
     train_df, val_df = split_train_val(data_df, config.dates)
