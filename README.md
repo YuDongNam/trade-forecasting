@@ -102,9 +102,29 @@ source .venv/bin/activate
 
 ### 2. Install Dependencies
 
+**Basic Installation (CPU):**
 ```bash
 pip install -r requirements.txt
 ```
+
+**GPU Installation (NVIDIA CUDA):**
+If you have an NVIDIA GPU with CUDA support:
+```bash
+# First install base requirements
+pip install -r requirements.txt
+
+# Then install CUDA-enabled PyTorch
+# For CUDA 11.8:
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+# For CUDA 12.1:
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+```
+
+**Note on Version Compatibility:**
+- NumPy < 2.0 is required (NeuralProphet compatibility)
+- All versions are pinned to ensure stability and avoid conflicts
+- If you encounter conflicts, try installing in a fresh virtual environment
 
 ### 3. Prepare Data
 
@@ -211,15 +231,53 @@ Each exogenous feature can be configured with:
 
 ## Troubleshooting
 
+### Dependency Conflicts
+If you encounter dependency conflicts during installation:
+
+1. **Create a fresh virtual environment:**
+   ```bash
+   python -m venv .venv
+   .venv\Scripts\activate  # Windows
+   source .venv/bin/activate  # Linux/Mac
+   ```
+
+2. **Upgrade pip first:**
+   ```bash
+   pip install --upgrade pip setuptools wheel
+   ```
+
+3. **Install in order:**
+   ```bash
+   # Install NumPy first (required by others)
+   pip install "numpy>=1.24.0,<2.0.0"
+   
+   # Then install other dependencies
+   pip install -r requirements.txt
+   ```
+
+4. **If conflicts persist, try installing core packages individually:**
+   ```bash
+   pip install "pandas>=2.0.0,<2.3.0"
+   pip install "torch>=2.0.0,<2.5.0"
+   pip install "pytorch-lightning>=2.0.0,<3.0.0"
+   pip install "neuralprophet>=0.6.0,<0.7.0"
+   ```
+
 ### Import Errors
 If you encounter import errors:
 ```bash
 pip install --upgrade -r requirements.txt
 ```
 
+### NumPy Version Issues
+If you see errors about NumPy 2.0:
+- NeuralProphet requires NumPy < 2.0
+- Force reinstall: `pip install --force-reinstall "numpy>=1.24.0,<2.0.0"`
+
 ### CUDA/GPU Issues
 If GPU is not detected:
 - Check CUDA installation: `python -c "import torch; print(torch.cuda.is_available())"`
+- Verify PyTorch CUDA version matches your CUDA installation
 - Set `accelerator: "cpu"` in `config.yaml` to force CPU usage
 
 ### Data Loading Errors
@@ -230,4 +288,5 @@ If GPU is not detected:
 ## License
 
 This project is for research/educational purposes.
+
 
