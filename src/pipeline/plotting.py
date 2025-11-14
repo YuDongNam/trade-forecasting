@@ -13,6 +13,7 @@ def plot_case(
     metrics: Dict[str, float],
     output_path: Path,
     train_end_date: str = None,
+    val_start_date: str = None,
 ) -> None:
     """
     Create and save a plot for a single case.
@@ -64,16 +65,32 @@ def plot_case(
     )
     
     # Plot forecast
-    ax.plot(
-        predictions_df["ds"],
-        predictions_df["forecast"],
-        "b-",
-        label="Forecast",
-        linewidth=2,
-        alpha=0.7,
-        marker="s",
-        markersize=4,
-    )
+    # forecast는 validation 구간만 그림
+    if val_start_date is not None:
+        val_start = pd.to_datetime(val_start_date)
+        mask_val = predictions_df["ds"] >= val_start
+        ax.plot(
+            predictions_df.loc[mask_val, "ds"],
+            predictions_df.loc[mask_val, "forecast"],
+            "b-",
+            label="Forecast",
+            linewidth=2,
+            alpha=0.7,
+            marker="s",
+            markersize=4,
+        )
+    else:
+        # val_start를 안 넘기면 기존처럼 전 구간 그림
+        ax.plot(
+            predictions_df["ds"],
+            predictions_df["forecast"],
+            "b-",
+            label="Forecast",
+            linewidth=2,
+            alpha=0.7,
+            marker="s",
+            markersize=4,
+        )
     
     # Add vertical line to separate train and validation periods
     if train_end_date:
