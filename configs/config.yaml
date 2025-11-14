@@ -3,16 +3,16 @@
 # Date ranges for train/validation split
 dates:
   train_start: "2010-01-01"
-  train_end: "2020-12-31"
-  val_start: "2021-01-01"
-  val_end: "2024-12-31"
+  train_end: "2024-05-31"
+  val_start: "2024-06-01"
+  val_end: "2025-05-31"
   forecast_horizon: 12  # months
 
 # NeuralProphet hyperparameters
 model:
   epochs: 100
   batch_size: 32
-  learning_rate: 0.01
+  learning_rate: 0.001
   loss_func: "MAE"
   n_changepoints: 10
   changepoints_range: 0.8
@@ -22,7 +22,7 @@ model:
   seasonality_reg: 0
   ar_reg: 0.1
   # GPU settings
-  accelerator: "auto"  # "auto", "gpu", or "cpu"
+  accelerator: "gpu"  # "auto", "gpu", or "cpu"
   devices: 1
 
 # Output directories

@@ -12,6 +12,7 @@ def plot_case(
     predictions_df: pd.DataFrame,
     metrics: Dict[str, float],
     output_path: Path,
+    train_end_date: str = None,
 ) -> None:
     """
     Create and save a plot for a single case.
@@ -73,6 +74,19 @@ def plot_case(
         marker="s",
         markersize=4,
     )
+    
+    # Add vertical line to separate train and validation periods
+    if train_end_date:
+        train_end = pd.to_datetime(train_end_date)
+        if predictions_df["ds"].min() <= train_end <= predictions_df["ds"].max():
+            ax.axvline(
+                x=train_end,
+                color="red",
+                linestyle="--",
+                linewidth=2,
+                alpha=0.7,
+                label="Train/Val Split",
+            )
     
     # Formatting
     ax.set_xlabel("Date", fontsize=12)

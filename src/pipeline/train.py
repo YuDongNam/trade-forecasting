@@ -71,6 +71,14 @@ def train_case(
     
     # Fit model
     print(f"Training {case.label}...")
+    print(f"  Training data: {len(train_df)} samples ({train_df['ds'].min()} to {train_df['ds'].max()})")
+    print(f"  Validation data: {len(val_df)} samples ({val_df['ds'].min()} to {val_df['ds'].max()})")
+    print(f"  Epochs: {config.model.epochs}, Batch size: {config.model.batch_size}")
+    
+    # Measure training time
+    import time
+    start_time = time.time()
+    
     # Suppress verbose output - NeuralProphet will show progress bar automatically
     # progress=None suppresses the plot, but training progress is still shown
     import warnings
@@ -79,12 +87,20 @@ def train_case(
         metrics_df = model.fit(
             train_df, 
             validation_df=val_df, 
-            progress=None  # Suppress plot output, keep progress bar
+            progress="bar"  # Show progress bar to verify training is happening
         )
     
-    # Make predictions on validation set
+    training_time = time.time() - start_time
+    print(f"  Training completed in {training_time:.2f} seconds ({training_time/60:.2f} minutes)")
+    
+    # Verify training actually happened by checking metrics
+    if metrics_df is not None and len(metrics_df) > 0:
+        print(f"  Training metrics shape: {metrics_df.shape}")
+        if hasattr(metrics_df, 'columns'):
+            print(f"  Available metrics: {list(metrics_df.columns)}")
+    
+    # Make predictions on full dataset (train + validation) for plotting
     # Create future dataframe that includes both train and validation periods
-    # We need to predict on the full dataset to get validation predictions
     full_df = pd.concat([train_df, val_df]).sort_values("ds").reset_index(drop=True)
     
     # Create future dataframe for predictions
@@ -95,7 +111,7 @@ def train_case(
     )
     forecast_df = model.predict(future_df)
     
-    # Extract validation predictions
+    # Extract validation predictions for metrics calculation
     val_start = pd.to_datetime(config.dates.val_start)
     val_end = pd.to_datetime(config.dates.val_end)
     
@@ -104,7 +120,7 @@ def train_case(
         & (pd.to_datetime(forecast_df["ds"]) <= val_end)
     ].copy()
     
-    # Merge with actual values
+    # Merge validation predictions with actual values for metrics
     val_actual = val_df[["ds", "y"]].copy()
     val_actual["ds"] = pd.to_datetime(val_actual["ds"])
     val_forecast["ds"] = pd.to_datetime(val_forecast["ds"])
@@ -127,10 +143,24 @@ def train_case(
     # Remove any NaN values
     val_merged = val_merged.dropna(subset=["actual", "forecast"])
     
-    # Compute metrics
+    # Compute metrics on validation set
     metrics_dict = compute_metrics(
         val_merged["actual"].values, val_merged["forecast"].values
     )
+    
+    # Create full period predictions for plotting (train + validation)
+    # Merge full forecast with full actual data
+    full_actual = full_df[["ds", "y"]].copy()
+    full_actual["ds"] = pd.to_datetime(full_actual["ds"])
+    forecast_df["ds"] = pd.to_datetime(forecast_df["ds"])
+    
+    full_plot_df = full_actual.merge(
+        forecast_df[["ds", "yhat1"]],
+        on="ds",
+        how="inner",
+    )
+    full_plot_df = full_plot_df.rename(columns={"y": "actual", "yhat1": "forecast"})
+    full_plot_df = full_plot_df.dropna(subset=["actual", "forecast"])
     
     # Save model checkpoint
     model_dir = Path(config.outputs["models_dir"])
@@ -156,5 +186,6 @@ def train_case(
     print(f"  Validation MAE: {metrics_dict['MAE']:.2f}")
     print(f"  Validation MAPE: {metrics_dict['MAPE']:.2f}%")
     
-    return model, metrics_dict, val_merged
+    # Return full period predictions for plotting
+    return model, metrics_dict, full_plot_df
 

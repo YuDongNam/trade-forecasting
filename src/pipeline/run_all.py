@@ -47,9 +47,15 @@ def run_all_cases(config_path: str) -> None:
             # Train
             model, metrics, predictions_df = train_case(config, case, data_df)
             
-            # Plot
+            # Plot (full period: train + validation)
             plot_path = Path(config.outputs["plots_dir"]) / f"{case.id}.png"
-            plot_case(case, predictions_df, metrics, plot_path)
+            plot_case(
+                case, 
+                predictions_df, 
+                metrics, 
+                plot_path,
+                train_end_date=config.dates.train_end
+            )
             
             # Store metrics
             metrics["case_id"] = case.id
