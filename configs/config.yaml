@@ -13,8 +13,8 @@ model:
   epochs: 150
   batch_size: 32
   learning_rate: 0.001
-  loss_func: "MAE"
-  n_changepoints: 25
+  loss_func: "Huber"
+  n_changepoints: 10
   changepoints_range: 0.8
   n_lags: 10  # number of lags for autoregression
   normalize: "auto"
