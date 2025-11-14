@@ -10,8 +10,8 @@ dates:
 
 # NeuralProphet hyperparameters
 model:
-  epochs: 150
-  batch_size: 64
+  epochs: 80
+  batch_size: 8
   learning_rate: 0.0005
   loss_func: "Huber"
   n_changepoints: 10
