@@ -71,29 +71,61 @@ def train_case(
     
     # Fit model
     print(f"Training {case.label}...")
-    metrics_df = model.fit(train_df, validation_df=val_df, progress="bar")
+    # Suppress verbose output - NeuralProphet will show progress bar automatically
+    # progress=None suppresses the plot, but training progress is still shown
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        metrics_df = model.fit(
+            train_df, 
+            validation_df=val_df, 
+            progress=None  # Suppress plot output, keep progress bar
+        )
     
     # Make predictions on validation set
-    # Create future dataframe for validation period
+    # Create future dataframe that includes both train and validation periods
+    # We need to predict on the full dataset to get validation predictions
+    full_df = pd.concat([train_df, val_df]).sort_values("ds").reset_index(drop=True)
+    
+    # Create future dataframe for predictions
     future_df = model.make_future_dataframe(
-        train_df, periods=len(val_df), n_historic_predictions=len(train_df)
+        full_df, 
+        periods=0,  # No future periods, just predict on existing data
+        n_historic_predictions=len(full_df)
     )
     forecast_df = model.predict(future_df)
     
     # Extract validation predictions
+    val_start = pd.to_datetime(config.dates.val_start)
+    val_end = pd.to_datetime(config.dates.val_end)
+    
     val_forecast = forecast_df[
-        (forecast_df["ds"] >= pd.to_datetime(config.dates.val_start))
-        & (forecast_df["ds"] <= pd.to_datetime(config.dates.val_end))
+        (pd.to_datetime(forecast_df["ds"]) >= val_start)
+        & (pd.to_datetime(forecast_df["ds"]) <= val_end)
     ].copy()
     
     # Merge with actual values
     val_actual = val_df[["ds", "y"]].copy()
+    val_actual["ds"] = pd.to_datetime(val_actual["ds"])
+    val_forecast["ds"] = pd.to_datetime(val_forecast["ds"])
+    
     val_merged = val_actual.merge(
         val_forecast[["ds", "yhat1"]],
         on="ds",
         how="inner",
     )
+    
+    if len(val_merged) == 0:
+        raise ValueError(
+            f"No overlapping dates between actual and forecast for {case.id}. "
+            f"Actual dates: {val_actual['ds'].min()} to {val_actual['ds'].max()}, "
+            f"Forecast dates: {val_forecast['ds'].min()} to {val_forecast['ds'].max()}"
+        )
+    
     val_merged = val_merged.rename(columns={"y": "actual", "yhat1": "forecast"})
+    
+    # Remove any NaN values
+    val_merged = val_merged.dropna(subset=["actual", "forecast"])
     
     # Compute metrics
     metrics_dict = compute_metrics(
